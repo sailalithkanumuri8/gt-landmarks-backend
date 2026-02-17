@@ -38,8 +38,6 @@ pip install -r requirements.txt
 
 ### 4. Configure MongoDB
 Create a `.env` file in the project root:
-```bash
-```
 
 ### 3. Seed Database
 ```bash
