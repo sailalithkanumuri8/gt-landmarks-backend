@@ -1,6 +1,6 @@
 # GT Landmarks Backend
 
-Flask backend for a Georgia Tech landmarks image classification workshop.
+Flask backend for a Georgia Tech landmarks image classification project.
 
 ## What's Included
 
@@ -28,7 +28,7 @@ cp .env.example .env
 # Import landmark images from data/ folder
 python3 scripts/import_local_data.py
 
-# Add sample users and visits (optional)
+# Add sample users and visits
 python3 scripts/seed_sample_data.py
 ```
 
@@ -54,9 +54,6 @@ Server runs at `http://localhost:5001`
 - `POST /api/visits` - Record visit
 - `GET /api/users/<id>/visits` - User's visits
 - `GET /api/landmarks/<id>/visitors` - Landmark visitors
-
-**Analytics**
-- `GET /api/analytics` - Summary stats
 
 **Analytics**
 - `GET /api/analytics` - Summary stats with top landmarks and users
@@ -98,5 +95,3 @@ curl http://localhost:5001/api/analytics
 - MongoDB
 - Pandas 2.2.0
 - Numpy 1.26.3
-
-Go Jackets! 🐝💛
