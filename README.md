@@ -10,17 +10,35 @@ Flask backend for a Georgia Tech landmarks image classification project.
 - Sample users with visit history
 - Analytics endpoints with top landmarks and users
 
-## Setup
+## Setup Instructions
 
-### 1. Install
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd gt-landmarks-backend
+```
+
+### 2. Create Virtual Environment
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+
+# On Windows:
+# venv\Scripts\activate
+```
+
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configure MongoDB
+### 4. Configure MongoDB
+Create a `.env` file in the project root:
 ```bash
-cp .env.example .env
-# Edit .env with your MongoDB URI
 ```
 
 ### 3. Seed Database
@@ -32,7 +50,7 @@ python3 scripts/import_local_data.py
 python3 scripts/seed_sample_data.py
 ```
 
-### 4. Run
+### 6. Run the Server
 ```bash
 python3 app.py
 ```
@@ -92,6 +110,7 @@ curl http://localhost:5001/api/analytics
 ## Tech Stack
 
 - Flask 3.0.0
-- MongoDB
+- MongoDB with GridFS
 - Pandas 2.2.0
 - Numpy 1.26.3
+- Python 3.11+
