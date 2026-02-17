@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson import ObjectId
@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
+import gridfs
 
 load_dotenv()
 
@@ -19,12 +20,18 @@ db = client['gt_landmarks']
 landmarks_collection = db['landmarks']
 users_collection = db['users']
 visits_collection = db['visits']
+fs = gridfs.GridFS(db)
 
 
 def serialize(doc):
-    """Convert MongoDB _id to string"""
+    """Convert MongoDB ObjectId fields to strings"""
     if doc:
-        doc['_id'] = str(doc['_id'])
+        if '_id' in doc:
+            doc['_id'] = str(doc['_id'])
+        if 'user_id' in doc:
+            doc['user_id'] = str(doc['user_id'])
+        if 'landmark_id' in doc:
+            doc['landmark_id'] = str(doc['landmark_id'])
     return doc
 
 
@@ -229,6 +236,26 @@ def get_analytics():
     return jsonify({'analytics': analytics}), 200
 
 
+# ==================== IMAGES ====================
+
+@app.route('/api/images/<path:filename>')
+def get_image(filename):
+    """Serve image stored in GridFS"""
+    try:
+        grid_file = fs.find_one({'filename': filename})
+        if not grid_file:
+            return jsonify({'error': 'Image not found'}), 404
+
+        content_type = grid_file.content_type or 'application/octet-stream'
+        return Response(
+            grid_file.read(),
+            mimetype=content_type,
+            headers={'Cache-Control': 'public, max-age=86400'}
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/health', methods=['GET'])
 def health():
     """Health check"""
@@ -236,4 +263,5 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
+

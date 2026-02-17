@@ -5,9 +5,10 @@ Flask backend for a Georgia Tech landmarks image classification workshop.
 ## What's Included
 
 - Flask REST API with pandas/numpy
-- 29 training images from Wikimedia Commons
+- 223 training images across 5 GT landmarks
 - MongoDB for landmarks, users, and visits
-- Analytics endpoints
+- Sample users with visit history
+- Analytics endpoints with top landmarks and users
 
 ## Setup
 
@@ -24,15 +25,19 @@ cp .env.example .env
 
 ### 3. Seed Database
 ```bash
-python seed_data.py
+# Import landmark images from data/ folder
+python3 scripts/import_local_data.py
+
+# Add sample users and visits (optional)
+python3 scripts/seed_sample_data.py
 ```
 
 ### 4. Run
 ```bash
-python app.py
+python3 app.py
 ```
 
-Server runs at `http://localhost:5000`
+Server runs at `http://localhost:5001`
 
 ## API Endpoints
 
@@ -53,22 +58,39 @@ Server runs at `http://localhost:5000`
 **Analytics**
 - `GET /api/analytics` - Summary stats
 
+**Analytics**
+- `GET /api/analytics` - Summary stats with top landmarks and users
+
+**Images**
+- `GET /api/images/<path>` - Serve images from GridFS
+
 **Health**
 - `GET /api/health` - Status check
 
 ## Quick Test
 
 ```bash
-curl http://localhost:5000/api/health
-curl http://localhost:5000/api/landmarks
-curl http://localhost:5000/api/analytics
+curl http://localhost:5001/api/health
+curl http://localhost:5001/api/landmarks
+curl http://localhost:5001/api/analytics
 ```
 
 ## Dataset
 
-- Tech Tower: 15 images
-- CULC: 14 images
-- All from Wikimedia Commons (CC0, CC BY-SA)
+**Landmarks:**
+- Bobby Dodd Stadium: 50 images
+- Clough Undergraduate Learning Commons (CULC): 50 images
+- Kendeda Building: 50 images
+- McCamish Pavilion: 50 images
+- Tech Tower: 23 images
+- **Total: 223 images across 5 landmarks**
+
+**Sample Users:**
+- alice_johnson (4 visits)
+- bob_smith (3 visits)
+- carol_williams (5 visits - visited all landmarks!)
+- david_brown (2 visits)
+- emma_davis (3 visits)
 
 ## Tech Stack
 
