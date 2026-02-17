@@ -43,3 +43,12 @@ dataset/
 *.jpeg
 *.png
 *.gif
+*.webp
+
+# Allow images in data/ folder for landmark training
+!data/**/*.jpg
+!data/**/*.jpeg
+!data/**/*.png
+!data/**/*.gif
+!data/**/*.webp
+!data/**/*.JPG
