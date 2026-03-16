@@ -80,22 +80,18 @@ def create_user():
     if not data.get('username') or not data.get('email'):
         return jsonify({'error': 'Username and email required'}), 400
     
-    # WORKSHOP TODO: Check if user already exists (3 minutes)
-    # Hint: Use users_collection.find_one() to search by email
-    
-    
-    
-    # WORKSHOP TODO: Create user document (3 minutes)
-    # Hint: Create a dictionary with username, email, and created_at fields
-    # Hint: Use datetime.utcnow() for the timestamp
-    
-    
-    
-    
-    # WORKSHOP TODO: Insert user into database (2 minutes)
-    # Hint: Use users_collection.insert_one() and get the inserted_id
-    
-    
+    existing = users_collection.find_one({'email': data['email']})
+    if existing:
+        return jsonify({'error': 'User with this email already exists'}), 409
+
+    user = {
+        'username': data['username'],
+        'email': data['email'],
+        'created_at': datetime.utcnow()
+    }
+
+    result = users_collection.insert_one(user)
+    user['_id'] = result.inserted_id
     
     return jsonify({'user': serialize(user)}), 201
 
@@ -122,16 +118,12 @@ def get_users():
 @app.route('/api/users/<user_id>', methods=['GET'])
 def get_user(user_id):
     """Get specific user"""
-    # WORKSHOP TODO: Find user in database (3 minutes)
-    # Hint: Use users_collection.find_one() with ObjectId(user_id)
-    
-    
+    user = users_collection.find_one({'_id': ObjectId(user_id)})
+
     if not user:
         return jsonify({'error': 'Not found'}), 404
-    
-    # WORKSHOP TODO: Count user's visits (3 minutes)
-    # Hint: Use visits_collection.count_documents() with user_id filter
-    
+
+    user['visit_count'] = visits_collection.count_documents({'user_id': ObjectId(user_id)})
     
     return jsonify({'user': serialize(user)}), 200
 
@@ -152,19 +144,15 @@ def record_visit():
     if existing:
         return jsonify({'message': 'Already recorded', 'visit': serialize(existing)}), 200
     
-    # WORKSHOP TODO: Create visit document (5 minutes)
-    # Hint: Create a dictionary with user_id, landmark_id, visited_at, and notes
-    # Hint: Convert user_id and landmark_id to ObjectId
-    # Hint: Use datetime.utcnow() for visited_at
-    
-    
-    
-    
-    
-    # WORKSHOP TODO: Insert visit into database (2 minutes)
-    # Hint: Use visits_collection.insert_one() and set visit['_id']
-    
-    
+    visit = {
+        'user_id': ObjectId(data['user_id']),
+        'landmark_id': ObjectId(data['landmark_id']),
+        'visited_at': datetime.utcnow(),
+        'notes': data.get('notes', '')
+    }
+
+    result = visits_collection.insert_one(visit)
+    visit['_id'] = result.inserted_id
     
     return jsonify({'visit': serialize(visit)}), 201
 
@@ -198,17 +186,16 @@ def get_landmark_visitors(landmark_id):
         return jsonify({'visitors': []}), 200
     
     result = []
-    # WORKSHOP TODO: Build visitor list with user details (5 minutes)
-    # Hint: Loop through visits and find each user by visit['user_id']
-    # Hint: Append a dictionary with visit_id, user, visited_at, and notes
-    
-    
-    
-    
-    
-    
-    
-    
+    for visit in visits:
+        user = users_collection.find_one({'_id': visit['user_id']})
+        if user:
+            result.append({
+                'visit_id': str(visit['_id']),
+                'user': serialize(user),
+                'visited_at': visit['visited_at'].isoformat(),
+                'notes': visit.get('notes', '')
+            })
+
     return jsonify({'visitors': result}), 200
 
 
