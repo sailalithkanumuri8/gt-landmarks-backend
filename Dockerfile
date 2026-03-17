@@ -2,17 +2,24 @@
 # Build:  docker build -t gt-landmarks-backend .
 # Run:    docker run -p 5001:5001 gt-landmarks-backend
 
-FROM python:3.11-slim
+# WORKSHOP TODO: Choose a base image (2 minutes)
+
+
 
 WORKDIR /app
 
-# Install dependencies first (cached layer)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# WORKSHOP TODO: Install Python dependencies (3 minutes)
 
-# Copy application code
-COPY . .
 
-EXPOSE 5001
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "4", "app:app"]
+# WORKSHOP TODO: Copy the rest of the application code (2 minutes)
+
+
+
+# WORKSHOP TODO: Tell Docker which port the app listens on (1 minute)
+
+
+
+# WORKSHOP TODO: Set the start command (3 minutes)
+
+

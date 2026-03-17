@@ -3,25 +3,13 @@
 # Stop:   docker compose down
 
 services:
-  mongodb:
-    image: mongo:7
-    container_name: gt-mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+  # WORKSHOP TODO: Define the MongoDB service (3 minutes)
 
-  app:
-    build: .
-    container_name: gt-app
-    ports:
-      - "5001:5001"
-    environment:
-      - MONGO_URI=mongodb://mongodb:27017/
-    depends_on:
-      - mongodb
-    volumes:
-      - ./data:/app/data
 
-volumes:
-  mongo_data:
+
+  # WORKSHOP TODO: Define the Flask app service (5 minutes)
+
+
+
+# WORKSHOP TODO: Declare the named volume (1 minute)
+
