@@ -1,5 +1,5 @@
 """
-GT Landmarks Backend — Flask REST API
+GT Landmarks Backend
 
 Run locally:    python app.py
 Run in Docker:  docker compose up --build
