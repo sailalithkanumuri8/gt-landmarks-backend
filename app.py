@@ -1,3 +1,10 @@
+"""
+GT Landmarks Backend — Flask REST API
+
+Run locally:    python app.py
+Run in Docker:  docker compose up --build
+"""
+
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -14,7 +21,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# MongoDB setup
+# MongoDB connection
 client = MongoClient(os.getenv('MONGO_URI', 'mongodb://localhost:27017/'))
 db = client['gt_landmarks']
 landmarks_collection = db['landmarks']
@@ -24,7 +31,7 @@ fs = gridfs.GridFS(db)
 
 
 def serialize(doc):
-    """Convert MongoDB ObjectId fields to strings"""
+    """Convert MongoDB ObjectId fields to strings for JSON responses."""
     if doc:
         if '_id' in doc:
             doc['_id'] = str(doc['_id'])
@@ -222,7 +229,6 @@ def get_analytics():
     if visits:
         visits_df = pd.DataFrame(visits)
         
-        # Most visited landmarks
         top_landmarks = []
         for landmark_id, count in visits_df['landmark_id'].value_counts().head(5).items():
             landmark = landmarks_collection.find_one({'_id': landmark_id})
@@ -230,7 +236,6 @@ def get_analytics():
                 top_landmarks.append({'name': landmark['name'], 'visits': int(count)})
         analytics['top_landmarks'] = top_landmarks
         
-        # Most active users
         top_users = []
         for user_id, count in visits_df['user_id'].value_counts().head(5).items():
             user = users_collection.find_one({'_id': user_id})
@@ -261,6 +266,8 @@ def get_image(filename):
         return jsonify({'error': str(e)}), 500
 
 
+# ==================== HEALTH ====================
+
 @app.route('/api/health', methods=['GET'])
 def health():
     """Health check"""
@@ -269,4 +276,3 @@ def health():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
-

@@ -111,4 +111,37 @@ curl http://localhost:5001/api/analytics
 - MongoDB with GridFS
 - Pandas 2.2.0
 - Numpy 1.26.3
+- Gunicorn 21.2.0
 - Python 3.11+
+
+## Docker Deployment
+
+### Build & Run with Docker Compose (Recommended)
+```bash
+# Start the app + MongoDB
+docker compose up --build
+
+# In another terminal, test the API
+curl http://localhost:5001/api/health
+curl http://localhost:5001/api/landmarks
+
+# Seed the database (run inside the app container)
+docker compose exec app python scripts/import_local_data.py
+docker compose exec app python scripts/seed_sample_data.py
+
+# Stop everything
+docker compose down
+
+# Stop and delete database data
+docker compose down -v
+```
+
+### Build & Run Standalone
+```bash
+# Build the image
+docker build -t gt-landmarks-backend .
+
+# Run (requires a separate MongoDB instance)
+docker run -p 5001:5001 -e MONGO_URI=mongodb://host.docker.internal:27017/ gt-landmarks-backend
+```
+

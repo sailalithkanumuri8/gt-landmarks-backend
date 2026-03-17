@@ -1,0 +1,27 @@
+# Docker Compose — GT Landmarks (App + MongoDB)
+# Start:  docker compose up --build
+# Stop:   docker compose down
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: gt-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    container_name: gt-app
+    ports:
+      - "5001:5001"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  mongo_data:
